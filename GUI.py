@@ -1,4 +1,5 @@
 import customtkinter
+import time
 
 customtkinter.set_appearance_mode("system")
 customtkinter.set_default_color_theme("dark-blue")
@@ -11,7 +12,7 @@ root.geometry("800x500")
 tries = 0
 login_frame = None
 new_frame = None
-new_label = None
+new_label = None 
 
 def login():
     global login_frame, new_frame, new_label
@@ -32,11 +33,18 @@ def signup():
 
     if username_exists(username):
         print("Username already exists")
+    elif contains:
+        print("Your username can only contain letters, numbers and '_' ")
     else:
 
         with open("user_data.txt", "a") as file:
             file.write(f"{username}:{password}\n")
             print("Signup:", username, password)
+
+def contains(username):
+    if ("Æ", "Ø", "Å", "!", "-", "#", "$") in username:
+        return True
+
 
 def is_valid_account(username, password):
     with open("user_data.txt", "r") as file:
@@ -46,6 +54,7 @@ def is_valid_account(username, password):
                 return True
     return False
 
+
 def username_exists(username):
     with open("user_data.txt", "r") as file:
         for line in file:
@@ -54,15 +63,36 @@ def username_exists(username):
                 return True
     return False
 
+def bruteforce():
+    guess = 0
+    count = 0
+    password = int(input("Enter a NUMBER password: "))
+
+    while guess != password:
+        guess = guess + 1
+        count = count + 1
+        if count == 1000:
+            print(guess)
+            count = 0
+        if guess == password:
+            print("your password is " + str(guess))
+            root.destroy()
+
 def open_new_page():
     global new_frame, new_label
 
     new_frame = customtkinter.CTkFrame(master=root)
     new_frame.pack(pady=20, padx=60, fill="both", expand=True)
 
-    new_label = customtkinter.CTkLabel(master=new_frame, text="Welcome to the New Page", font=("default", 24))
+    new_label = customtkinter.CTkLabel(master=new_frame, text="Welcome to brute", font=("default", 24))
     new_label.pack()
 
+    close_button = customtkinter.CTkButton(master=new_frame, text="Close", command=root.destroy)
+    close_button.pack(pady=12, padx=10)
+
+    bruteforce()
+    
+    
 # Create the login frame
 login_frame = customtkinter.CTkFrame(master=root)
 login_frame.pack(pady=20, padx=60, fill="both", expand=True)
